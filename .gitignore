@@ -1,0 +1,6 @@
+.venv/
+.durable-actors/
+__pycache__/
+generated/
+.env
+.env.local
