@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Munito Sandboxes and Terse Actor</title>
+<style>
+  :root { --bg: #0f0c14; --panel: #17121e; --line: #2a2233; --ink: #f0eef3; --muted: #9a92a6; --lime: #b8d93a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--ink); }
+  body { font-family: ui-sans-serif, system-ui, sans-serif; }
+  main { min-height: 100vh; display: grid; place-content: center; gap: 24px; padding: 16px; }
+  .frame { padding: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  canvas {
+    display: block; width: min(calc(100vw - 50px), 1472px); aspect-ratio: 368 / 89;
+    image-rendering: pixelated; border-radius: 4px;
+  }
+  p { margin: 0; text-align: center; color: var(--muted); font-size: clamp(14px, 2vw, 24px); }
+  b { color: var(--ink); font-variant-numeric: tabular-nums; font-weight: 600; }
+  #state.live { color: var(--lime); }
+</style>
+</head>
+<body>
+<main>
+  <div class="frame"><canvas id="canvas" width="368" height="89"></canvas></div>
+  <p><b id="painted">0</b> of <b id="total">0</b> pixels painted, each by its own sandbox<span id="time"></span></p>
+  <p id="state">Connecting</p>
+</main>
+<script>
+"use strict";
+// view.ts serves this page, its settings at /config, and a WebSocket grant of each Grid actor at /grant.
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const EMPTY = [0x24, 0x1d, 0x2e];
+let config, colors, image, seen, painted = 0, first = 0, last = 0, dirty = false;
+const open = new Set();
+
+function show(id, text) { document.getElementById(id).textContent = text; }
+
+function set(pixel, color) {
+  // A color outside the palette comes from a run of another picture: skip it.
+  if (!colors[color] || pixel >= seen.length) return;
+  if (!seen[pixel]) { seen[pixel] = 1; painted++; }
+  image.data.set([...colors[color], 255], pixel * 4);
+  dirty = true;
+}
+
+function onFrame(frame) {
+  if (Array.isArray(frame)) {
+    const [t, pixel, color] = frame;
+    set(pixel, color);
+    first = first || t;
+    last = Math.max(last, t);
+  } else if (typeof frame.picture === "string") {
+    // The whole picture of one actor when the page connects: one base-36 digit for each pixel, 0 for none.
+    for (let i = 0; i < frame.picture.length; i++) {
+      if (frame.picture[i] !== "0") set(i, parseInt(frame.picture[i], 36) - 1);
+    }
+  }
+}
+
+async function connect(shard) {
+  try {
+    const grant = await (await fetch(`/grant?shard=${shard}`)).json();
+    if (!grant.url) throw new Error(grant.error);
+    const socket = new WebSocket(grant.url);
+    socket.onopen = () => { open.add(shard); status(); };
+    socket.onmessage = (event) => onFrame(JSON.parse(event.data));
+    socket.onclose = () => { open.delete(shard); status(); setTimeout(() => connect(shard), 1000); };
+  } catch {
+    setTimeout(() => connect(shard), 2000);
+  }
+}
+
+function status() {
+  const live = open.size === config.shards;
+  const actors = `${config.shards} actors of the run ${config.run}`;
+  show("state", live ? `Live: ${actors}` : `Connecting to the ${actors}`);
+  document.getElementById("state").className = live ? "live" : "";
+}
+
+function draw() {
+  if (dirty) {
+    ctx.putImageData(image, 0, 0);
+    show("painted", painted.toLocaleString("en-US"));
+    if (first) show("time", `, ${(last - first).toFixed(1)} s from the first paint to the last`);
+    dirty = false;
+  }
+  requestAnimationFrame(draw);
+}
+
+fetch("/config").then((r) => r.json()).then((settings) => {
+  config = settings;
+  colors = config.palette.map((hex) => [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)));
+  canvas.width = config.width;
+  canvas.height = config.height;
+  image = ctx.createImageData(config.width, config.height);
+  seen = new Uint8Array(config.width * config.height);
+  for (let i = 0; i < config.width * config.height; i++) image.data.set([...EMPTY, 255], i * 4);
+  dirty = true;
+  show("total", (config.width * config.height).toLocaleString("en-US"));
+  status();
+  for (let shard = 0; shard < config.shards; shard++) connect(shard);
+  requestAnimationFrame(draw);
+});
+</script>
+</body>
+</html>
