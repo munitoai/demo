@@ -105,6 +105,7 @@ class Painter:
     def paint(self, command: str, pixel: int) -> None:
         body = {
             "size": "small",
+            "internet": True,
             "timeout": self.lifetime,
             "command": command,
             "env": self.env,

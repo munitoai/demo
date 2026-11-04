@@ -107,6 +107,7 @@ async function paintPixel(pixel: number, color: number): Promise<boolean> {
     const command = painterCommand(actors, `${run}-${pixel % shards}`, pixel, color, `${runId}-p${pixel}`)
     const sandbox = await create({
         size: "small",
+        internet: true,
         // The sandbox stops by itself after 2 minutes, also when this script stops first.
         timeout: 120,
         env: { TERSE_SESSION: session.token },
