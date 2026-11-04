@@ -46,7 +46,7 @@ jobs:
           domain: https://eu.infisical.com
           project-slug: munitoai
           env-slug: prod
-          secret-path: /munito/demo-ci
+          secret-path: /munito/demo
           export-type: env
 
       # An identity that may not read a path gets an EMPTY export and a
@@ -55,7 +55,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          : "${MUNITO_API_KEY:?empty: ci-demo cannot read prod:/munito/demo-ci}"
+          : "${MUNITO_API_KEY:?empty: ci-demo cannot read prod:/munito/demo}"
 
       - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
 
