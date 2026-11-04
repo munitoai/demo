@@ -1,0 +1,64 @@
+# Run the examples against the real API, with a test key.
+#
+# THIS WORKFLOW READS A KEY, SO IT RUNS ON `main` ONLY. A pull request runs
+# `check.yml`, which reads no secret.
+#
+# DO NOT ADD A `pull_request` OR `pull_request_target` TRIGGER HERE, and do not
+# add a step that checks out a pull request's head. The identity also refuses a
+# run from any other ref, so such a change fails rather than leaks.
+#
+# munitoai/infra, `terraform/bootstrap/infisical_access_ci.tf`, holds the
+# identity and what it may read.
+
+name: live
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Daily. The examples call a public API that changes without this repository,
+    # so a scheduled run is what catches the drift.
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # the OIDC token that Infisical verifies, for the test key
+
+concurrency:
+  group: live
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: Infisical/secrets-action@d2e351f16c6ca20d17c85e6c992e04bdeb64e87d # v1.0.18
+        with:
+          method: oidc
+          identity-id: ${{ vars.INFISICAL_CI_IDENTITY_ID }}
+          oidc-audience: ${{ vars.INFISICAL_OIDC_AUDIENCE }}
+          domain: https://eu.infisical.com
+          project-slug: munitoai
+          env-slug: prod
+          secret-path: /munito/demo
+          export-type: env
+
+      # An identity that may not read a path gets an EMPTY export and a
+      # SUCCESSFUL step, so a missing entry never says so. Fail here instead.
+      - name: the test key is not empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${MUNITO_API_KEY:?empty: ci-demo cannot read prod:/munito/demo}"
+
+      - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
+
+      # The action exported MUNITO_API_KEY into the environment of the job.
+      - name: run the examples
+        run: ./tools/live.sh
