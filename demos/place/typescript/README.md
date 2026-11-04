@@ -1,7 +1,9 @@
-# Munito Sandboxes and Terse Actor
+# Place — TypeScript
 
-Thousands of Munito sandboxes paint one picture, one sandbox for each pixel. Each sandbox runs one `curl` that calls
-`paint` on a [Terse](https://useterse.ai) durable actor. Your browser shows each paint as it comes.
+Thousands of Munito sandboxes paint one picture, one sandbox for each pixel. Each sandbox runs one `curl` that
+calls `paint` on a [Terse](https://useterse.ai) durable actor. Your browser shows each paint as it comes.
+
+Read [the demo README](../README.md) first for what the demo is and what the limits of the preview are.
 
 Video: add the link here.
 
@@ -38,7 +40,7 @@ several actors.
 You need:
 
 - Node.js 22.18 or later.
-- A Munito API key, for an organization with Sandboxes on. See [Get access and a key](../../README.md#get-access-and-a-key).
+- A Munito API key, for an organization with Sandboxes on. See [Get a key](../../../README.md#get-a-key).
 - A Terse account and the Terse CLI. The CLI needs [Bun](https://bun.sh) 1.4.2 or later.
 
 Do these steps in this folder:

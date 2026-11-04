@@ -1,5 +1,5 @@
 {
-  "name": "demo",
+  "name": "document-ai-ocr",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -15,7 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check": "npm run format:check && npm run build",
-    "data:fetch": "node scripts/fetch-data.mjs"
+    "data:fetch": "node ../data/fetch.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.45",

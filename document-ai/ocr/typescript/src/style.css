@@ -70,14 +70,62 @@ p {
   max-width: 34rem;
   color: #5b665f;
 }
-.counter {
+.reader {
+  display: grid;
+  gap: 1.25rem;
   margin-top: 2.5rem;
+  max-width: 34rem;
+}
+.reader label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #5b665f;
+}
+.reader input,
+.reader select {
+  font: inherit;
+  color: #26302c;
+  background: #fff;
+  border: 1px solid #bec8bf;
+  border-radius: 0.5rem;
+  padding: 0.6rem 0.7rem;
+  width: 100%;
 }
 output {
   display: block;
-  font-size: 3.5rem;
+  margin-top: 1.5rem;
+  color: #5b665f;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 1rem;
+}
+.failure {
+  color: #8a2f2f;
+}
+.result {
+  margin-top: 2.5rem;
+}
+.result h2 {
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: #5b665f;
+  margin: 2rem 0 0.5rem;
+}
+.result pre {
+  background: #fff;
+  border: 1px solid #dce1d8;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+code {
+  background: #eceee7;
+  border-radius: 0.25rem;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
 }
 .actions {
   display: flex;

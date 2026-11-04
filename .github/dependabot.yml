@@ -1,7 +1,14 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directories:
+      - "/document-ai/ocr/typescript"
+      - "/inference/chat/typescript"
+      - "/sandboxes/code-interpreter/typescript"
+      - "/sandboxes/dev-preview/typescript"
+      - "/sandboxes/fan-out/typescript"
+      - "/sandboxes/quickstart/typescript"
+      - "/demos/place/typescript"
     schedule:
       interval: "weekly"
       day: "monday"

@@ -1,17 +1,29 @@
-# Test documents
+# Sample documents
 
-These four public documents use the URLs from the monorepo's Bruno OCR requests.
-`sources.json` records each URL, Bruno request, source commit, and SHA-256 checksum.
+Four public documents, for the OCR examples beside this folder. `sources.json` records each URL, its Bruno request
+in the monorepo, the source commit, and the SHA-256 checksum of the file.
 
-Run `npm run data:fetch` to restore the files.
-The script refuses a file whose checksum changes.
+Download them:
 
-| File                              | Bruno test         |
+```bash
+node fetch.mjs
+```
+
+The script refuses a file whose checksum differs from `sources.json`. Git ignores the four files, so each clone
+downloads them again.
+
+| File                              | What it is         |
 | --------------------------------- | ------------------ |
-| `receipt.png`                     | Receipt OCR        |
-| `lithium_iron_cell_datasheet.pdf` | Datasheet OCR      |
-| `patient-packet-completed.pdf`    | Patient form OCR   |
-| `mistral7b.pdf`                   | Research paper OCR |
+| `receipt.png`                     | A receipt          |
+| `lithium_iron_cell_datasheet.pdf` | A product datasheet |
+| `patient-packet-completed.pdf`    | A filled patient form |
+| `mistral7b.pdf`                   | A research paper   |
 
-Git ignores the document binaries, as the monorepo does.
-The app excludes this folder from its build and blocks access through the development server.
+Each OCR example takes a path, so point it at one of these files:
+
+```bash
+../curl/ocr.sh ../data/receipt.png
+uv run ../python/ocr.py ../data/mistral7b.pdf --pages 0
+```
+
+The TypeScript app takes the file from a file field in the browser.

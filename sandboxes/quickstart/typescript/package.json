@@ -6,6 +6,11 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "start": "node quickstart.ts"
+    "start": "node quickstart.ts",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "typescript": "^7.0.0"
   }
 }

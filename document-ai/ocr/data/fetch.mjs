@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 
-const directory = new URL("../data/", import.meta.url);
+// The sample documents live beside this script.
+const directory = new URL("./", import.meta.url);
 const manifest = JSON.parse(await readFile(new URL("sources.json", directory), "utf8"));
 await mkdir(directory, { recursive: true });
 
