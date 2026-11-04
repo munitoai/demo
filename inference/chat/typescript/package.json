@@ -1,0 +1,19 @@
+{
+  "name": "inference-chat",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node chat.ts",
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openai": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "typescript": "^7.0.0"
+  }
+}

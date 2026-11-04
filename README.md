@@ -1,55 +1,115 @@
-# Demo
+# Munito AI examples
 
-A minimal React app with TypeScript, Vite, and TanStack Router.
-The home page has a counter. The About page checks navigation.
-The app needs no API, account, or database.
+Runnable examples of the Munito AI APIs: **Sandboxes** (Linux microVMs), **Inference** (open models on an
+OpenAI- and Anthropic-compatible API) and **Document AI** (OCR). Each example is a folder you can copy.
 
-## Run
+```
+sandboxes/      a Linux microVM for your code, your agents and your builds
+inference/      open models, through the OpenAI and Anthropic APIs
+document-ai/    PDFs and images into Markdown
+demos/          the large demos, which are not quick starts
+```
 
-1. Run `mise trust` in this folder.
-2. Run `mise install` to select the pinned Node version.
-3. Run `mise run setup` to install the locked dependencies.
-4. Run `mise run dev`.
-5. Open `http://127.0.0.1:5173`.
+## Why the tree looks like this
 
-With Node 24 or later and npm 11.10 or later, use `npm ci` and `npm run dev` directly.
+**Use case first, language second.** A reader arrives with a problem, not with a language: "I need to run code a
+model wrote", "I need the text of a PDF". So the first level is the problem, and the second level is the language.
+Two folders under one use case hold the same program in two languages, so you read the one you know and compare
+with the other.
 
-Run `npm run check` to check the format, types, and build.
-Run `npm run preview` to inspect the build at `http://127.0.0.1:4173`.
+**Every example stands alone.** One folder holds its own README with the exact command, its own dependency file,
+and nothing that reaches outside itself. Copy the folder into your project and it runs. Nothing here is a library,
+and no example imports another one.
 
-## Security rules
+**One key, from the environment.** Every example reads `MUNITO_API_KEY` from the environment, and no example holds
+a key, a host of Munito's own, or a private address. Each one calls the public API only.
 
-The source is `../monorepo` at commit `41a4367ed7bfaa8687e958037b349b9bc5b908d8`.
+## Get a key
 
-- `.npmrc`, `.prettierrc.json`, and `tsconfig.base.json` are direct copies from `monorepo/typescript`.
-- `.npmrc` enforces the same seven-day delay for dependency releases.
-- `mise.toml` uses the monorepo's Node pin. Direct dependencies use its lockfile versions.
-- `.gitignore` retains the rules for secrets, private keys, state files, and local credentials.
-- Dependabot retains weekly updates and the seven-day delay.
-- CI retains read-only permissions, pinned actions, and a checkout without stored credentials.
-- The pre-commit configuration retains the applicable file checks.
-- `security.ts` adapts the console's `src/server/csp.ts` and `src/server/public-web.ts`.
+1. Open [API keys in the console](https://console.munito.ai/keys).
+2. Create a key with the **Inference** permission. The console shows it one time only.
+3. Put it in the environment:
 
-Both local servers bind to `127.0.0.1`.
-They send the frame, MIME, referrer, permissions, cache, and robot headers from the console.
-The preview uses a CSP that permits only local scripts and styles.
-The development CSP retains the console's frame rule because Vite injects scripts and styles.
+```bash
+export MUNITO_API_KEY="munitoai_..."
+```
 
-The app has no inline production script, SSR script, external API, or embedded frame.
-Its production policy therefore needs no nonce, external origin, or eval exception.
-Keep secrets out of source code and browser variables.
-Keep document contents, prompts, and responses out of logs.
+Sandboxes are in preview. To turn them on for your organization,
+[talk to an engineer](https://munito.ai/contact).
 
-The generated `dist/` folder does not configure another web server's headers.
-Apply `securityHeaders()` at that server before deployment.
-The GitHub configuration takes effect only after this folder becomes a GitHub repository.
-Install the hooks with `prek install` after Git initialization.
+| | Value |
+| --- | --- |
+| Inference and Document AI | `https://api.munito.ai/inference/v1` |
+| Sandboxes | `https://api.munito.ai/sandboxes/v1` |
+| Header | `Authorization: Bearer $MUNITO_API_KEY` |
+| EU only | `https://api.eu.munito.ai/inference/v1` |
+| Guide | [docs.munito.ai](https://docs.munito.ai) |
 
-## Test data
+## The examples
 
-`data/` contains four public sample documents from the Bruno OCR requests.
-Run `npm run data:fetch` to restore them.
-The manifest records their sources and checksums.
-The app does not serve or bundle these documents.
+Run each command inside the folder of the example.
 
-Router reference: [TanStack documentation](https://tanstack.com/router/latest/docs/routing/code-based-routing).
+### Sandboxes
+
+A sandbox is a Linux microVM with its own kernel, disk and network. See
+[docs.munito.ai/sandboxes](https://docs.munito.ai/sandboxes).
+
+| Example | What it does | Run it |
+| --- | --- | --- |
+| [quickstart/curl](sandboxes/quickstart/curl) | Create a sandbox, run a command, write and read a file, delete it | `./quickstart.sh` |
+| [quickstart/python](sandboxes/quickstart/python) | The same steps, with httpx | `uv run quickstart.py` |
+| [quickstart/typescript](sandboxes/quickstart/typescript) | The same steps, with `fetch` | `node quickstart.ts` |
+| [code-interpreter/python](sandboxes/code-interpreter/python) | A model writes a script, and a sandbox with no network runs it | `uv run interpreter.py "your question"` |
+| [code-interpreter/typescript](sandboxes/code-interpreter/typescript) | The same, with the OpenAI client | `npm install && npm start "your question"` |
+| [fan-out/python](sandboxes/fan-out/python) | Start 100 sandboxes at once, run a command in each, print the timings | `uv run fan_out.py` |
+| [fan-out/typescript](sandboxes/fan-out/typescript) | The same measurement, with `fetch` | `node fan-out.ts` |
+| [dev-preview/typescript](sandboxes/dev-preview/typescript) | Run a web server in a sandbox, and open it in a browser | `node preview.ts` |
+| [docker/curl](sandboxes/docker/curl) | Run Docker in a sandbox, from the `ubuntu` or the `base` template | `./docker.sh` |
+
+### Inference
+
+| Example | What it does | Run it |
+| --- | --- | --- |
+| [chat/curl](inference/chat/curl) | One answer, the same answer as a stream, and the model list | `./chat.sh` |
+| [chat/python](inference/chat/python) | The same, with the OpenAI client | `uv run chat.py` |
+| [chat/typescript](inference/chat/typescript) | The same, with the OpenAI client | `npm install && npm start` |
+
+### Document AI
+
+| Example | What it does | Run it |
+| --- | --- | --- |
+| [ocr/curl](document-ai/ocr/curl) | A PDF or an image into Markdown, by URL or as base64 | `./ocr.sh` |
+| [ocr/python](document-ai/ocr/python) | The same, with page selection, tables and invoice fields | `uv run ocr.py` |
+| [ocr/typescript](document-ai/ocr/typescript) | A React app that reads a document, with the key in its dev server | `npm ci && npm run dev` |
+| [ocr/data](document-ai/ocr/data) | Four public sample documents for the three examples above | `node fetch.mjs` |
+
+### Demos
+
+| Demo | What it does |
+| --- | --- |
+| [place](demos/place) | 32,752 sandboxes paint one picture, one sandbox for each pixel, in [TypeScript](demos/place/typescript) and in [Python](demos/place/python) |
+
+## What each language needs
+
+- **The shell examples** need curl and [jq](https://jqlang.org/download/).
+- **The Python examples** need [uv](https://docs.astral.sh/uv/). Each script declares its packages in its own
+  header (PEP 723), so `uv run <script>.py` installs them in a temporary environment. There is no shared
+  environment and no `requirements.txt`.
+- **The TypeScript examples** need Node.js 22.18 or later, which runs a TypeScript file as it is. An example that
+  needs a package says so and holds its own `package.json`.
+
+Every example gives its sandboxes a short `timeout`, so a sandbox stops by itself when a script stops early, and
+every example deletes its sandboxes at the end.
+
+## Costs
+
+An example that runs a sandbox or calls a model spends credits. The quick starts use the smallest size and run for
+seconds. The [place demo](demos/place) can start tens of thousands of sandboxes, so read its README before you
+raise its pixel count. See [sandbox pricing](https://docs.munito.ai/sandboxes/pricing),
+[inference pricing](https://docs.munito.ai/pricing) and
+[Document AI pricing](https://docs.munito.ai/document-ai/pricing).
+
+## License
+
+The code is under the [MIT license](LICENSE). The pictures of the place demo show the marks of Munito and of
+Terse. The license does not cover these marks.

@@ -7,14 +7,14 @@ repos:
       - id: check-merge-conflict
       - id: check-added-large-files
         args: [--maxkb=1024]
-        exclude: ^data/
       - id: check-yaml
       - id: check-toml
       - id: check-json
+        exclude: ^\.claude/
   - repo: local
     hooks:
-      - id: web-check
-        name: format, types, and build
+      - id: examples-check
+        name: shell syntax, Python syntax, and the TypeScript types and build
         entry: mise run check
         language: system
         pass_filenames: false

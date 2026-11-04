@@ -1,0 +1,9 @@
+[project]
+name = "munito-terse-demo"
+version = "0.1.0"
+description = "Munito sandboxes paint a picture on a Terse durable actor, one sandbox for each pixel."
+requires-python = ">=3.11"
+dependencies = ["durable-actors==0.14.0", "httpx>=0.27", "pillow>=10"]
+
+[dependency-groups]
+dev = ["durable-actors[cli]==0.14.0"]

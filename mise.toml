@@ -1,14 +1,12 @@
 [tools]
 node = "24.20.0"
-
-[tasks.setup]
-description = "Install the locked dependencies."
-run = "npm ci"
-
-[tasks.dev]
-description = "Start the local app."
-run = "npm run dev"
+uv = "0.12.8"
+shellcheck = "0.11.0"
 
 [tasks.check]
-description = "Check the format, types, and build."
-run = "npm run check"
+description = "Check every example: shell syntax, Python syntax, and the TypeScript types and build."
+run = "./tools/check.sh"
+
+[tasks.data]
+description = "Download the sample documents of the OCR examples."
+run = "node document-ai/ocr/data/fetch.mjs"
