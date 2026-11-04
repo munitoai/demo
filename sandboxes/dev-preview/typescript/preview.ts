@@ -98,7 +98,15 @@ try {
     console.log(`  ${signed.url}`)
     console.log("")
     console.log(`The sandbox stops by itself after ${minutes} minutes. Press Ctrl-C to delete it now.`)
-    await new Promise<void>(resolve => process.once("SIGINT", () => resolve()))
+    // Wait for Ctrl-C, or for the timeout of the sandbox. A timer keeps Node running; a signal handler alone does
+    // not, and Node then ends the script here and deletes nothing.
+    await new Promise<void>(resolve => {
+        const until = setTimeout(resolve, minutes * 60_000)
+        process.once("SIGINT", () => {
+            clearTimeout(until)
+            resolve()
+        })
+    })
     console.log("")
 } finally {
     console.log("== Delete the sandbox")

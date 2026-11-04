@@ -14,12 +14,15 @@ Needs [uv](https://docs.astral.sh/uv/). The script declares `httpx[http2]` in it
 
 ## What it reports
 
-Three phases, each with the number of sandboxes that answered, the wall time, and the spread:
+Three phases, each with the number of sandboxes that answered, the wall time, and the spread. This is a real run of
+`uv run fan_out.py -n 8` on 2026-11-04:
 
 ```
-create     100 of 100   ok in   8.41 s   p50 1.92 s  p90 3.10 s  max 4.77 s
-command    100 of 100   ok in   1.63 s   p50 0.41 s  p90 0.78 s  max 1.02 s
-delete     100 of 100   ok in   2.05 s   p50 0.33 s  p90 0.61 s  max 0.94 s
+Starting 8 sandboxes of size small at once
+create      8 of 8     ok in   0.14 s   p50 0.09 s  p90 0.11 s  max 0.13 s
+command     8 of 8     ok in   0.11 s   p50 0.08 s  p90 0.11 s  max 0.11 s
+            8 different outputs, such as: a1412914-1e4d-4f0f-a25c-e8ca5d22a231
+delete      8 of 8     ok in   0.12 s   p50 0.09 s  p90 0.11 s  max 0.12 s
 ```
 
 The default command prints the boot id of the sandbox's kernel. Each sandbox is a separate microVM, so each boot id

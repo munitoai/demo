@@ -14,12 +14,15 @@ Needs Node.js 22.18 or later, which runs a TypeScript file as it is. There is no
 
 ## What it reports
 
-Three phases, each with the number of sandboxes that answered, the wall time, and the spread:
+Three phases, each with the number of sandboxes that answered, the wall time, and the spread. This is a real run of
+`node fan-out.ts --count 8` on 2026-11-04:
 
 ```
-create     100 of 100   ok in   8.41 s   p50 1.92 s  p90 3.10 s  max 4.77 s
-command    100 of 100   ok in   1.63 s   p50 0.41 s  p90 0.78 s  max 1.02 s
-delete     100 of 100   ok in   2.05 s   p50 0.33 s  p90 0.61 s  max 0.94 s
+Starting 8 sandboxes of size small at once
+create      8 of 8     ok in   0.12 s   p50 0.09 s  p90 0.11 s  max 0.11 s
+command     8 of 8     ok in   0.29 s   p50 0.08 s  p90 0.28 s  max 0.28 s
+            8 different outputs, such as: 655d0105-27c0-4f67-8db4-3c96e6c1056b
+delete      8 of 8     ok in   0.15 s   p50 0.11 s  p90 0.15 s  max 0.15 s
 ```
 
 The default command prints the boot id of the sandbox's kernel. Each sandbox is a separate microVM, so each boot id

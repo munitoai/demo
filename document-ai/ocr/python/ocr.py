@@ -126,6 +126,9 @@ def main() -> int:
         print(f"\n<!-- fields -->\n{json.dumps(json.loads(result['document_annotation']), indent=2)}")
 
     usage = result["usage"]
+    # The Markdown goes to standard output and this line to standard error. Flush first, so that a terminal that
+    # shows both keeps them in order.
+    sys.stdout.flush()
     print(
         f"\n[{result['model']}: {usage['pages_processed']} pages, {usage['pages_failed']} failed,"
         f" {usage['cost_usd']} USD, read in {usage['inference_region']}]",
