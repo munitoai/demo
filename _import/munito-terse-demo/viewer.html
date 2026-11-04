@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Munito Boxes and Terse Actor</title>
+<style>
+  :root { --night: #141019; --empty: #241d2e; --paper: #f0eef3; --muted: #9d93a8; --lime: #d7fa4a; }
+  html, body { margin: 0; min-height: 100%; background: var(--night); color: var(--paper); font-family: system-ui, sans-serif; }
+  main { min-height: 100vh; display: grid; place-content: center; gap: 24px; padding: 16px; box-sizing: border-box; }
+  canvas { width: min(96vw, 1472px); image-rendering: pixelated; border-radius: 8px; background: var(--empty); }
+  p { margin: 0; text-align: center; font-size: clamp(16px, 2.4vw, 28px); color: var(--muted); }
+  b { color: var(--paper); font-variant-numeric: tabular-nums; }
+  .live { color: var(--lime); }
+</style>
+<main>
+  <canvas id="canvas" width="1" height="1"></canvas>
+  <p><b id="painted">0</b> of <b id="total">0</b> pixels painted, each by its own sandbox <span id="state"></span></p>
+</main>
+<script>
+  const canvas = document.getElementById("canvas"), ctx = canvas.getContext("2d");
+  const show = (id, text) => (document.getElementById(id).textContent = text);
+  const CODES = "0123456789abcdefghijklmnopqrstuvwxyz";
+  let palette = [];
+
+  function snapshot(m) {
+    canvas.width = m.width;
+    canvas.height = m.height;
+    palette = m.palette.map((hex) => "#" + hex);
+    ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue("--empty");
+    ctx.fillRect(0, 0, m.width, m.height);
+    [...m.pixels].forEach((code, i) => code !== "." && dot(i, CODES.indexOf(code)));
+    show("total", (m.width * m.height).toLocaleString("en-US"));
+    show("painted", m.n.toLocaleString("en-US"));
+  }
+
+  function dot(i, color) {
+    ctx.fillStyle = palette[color];
+    ctx.fillRect(i % canvas.width, Math.floor(i / canvas.width), 1, 1);
+  }
+
+  // paint.py serves this page and, at /grant, a fresh WebSocket grant of the canvas actor for each connection.
+  async function connect() {
+    let url;
+    try {
+      url = (await (await fetch("/grant")).json()).url;
+    } catch {
+      show("state", "· waiting for the canvas");
+      return setTimeout(connect, 2000);
+    }
+    const socket = new WebSocket(url);
+    socket.onopen = () => show("state", "· live");
+    socket.onmessage = (event) => {
+      const m = JSON.parse(event.data);
+      if (m.type === "snapshot") snapshot(m);
+      if (m.type === "paint") {
+        dot(m.i, m.c);
+        show("painted", m.n.toLocaleString("en-US"));
+      }
+    };
+    socket.onclose = () => {
+      show("state", "· reconnecting");
+      setTimeout(connect, 1000);
+    };
+  }
+  document.getElementById("state").className = "live";
+  connect();
+</script>
+</html>
