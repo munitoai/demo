@@ -1,0 +1,35 @@
+{
+  "sourceRepository": "munitoai/monorepo",
+  "sourceCommit": "41a4367ed7bfaa8687e958037b349b9bc5b908d8",
+  "documents": [
+    {
+      "file": "receipt.png",
+      "url": "https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/receipt.png",
+      "bruno": "bruno/munito/external/ocr/ocr-receipt.bru",
+      "bytes": 3110191,
+      "sha256": "b2e77ebffdbf6746c26698b4c3ffa1b21e432906919cd9f21e18704a6d8e2e83"
+    },
+    {
+      "file": "lithium_iron_cell_datasheet.pdf",
+      "url": "https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/product_datasheet_analysis/lithium_iron_cell_datasheet.pdf",
+      "bruno": "bruno/munito/external/ocr/ocr-datasheet.bru",
+      "bytes": 301311,
+      "sha256": "1cccb625105d7b38294b70d0a8c68fc9a20ff27b21201bd414cdf0852253842d"
+    },
+    {
+      "file": "patient-packet-completed.pdf",
+      "url": "https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/hcls/patient-packet-completed.pdf",
+      "bruno": "bruno/munito/external/ocr/ocr-patient-form.bru",
+      "bytes": 4626348,
+      "sha256": "a2f5a8ebbafea0bc215689a289be189bf6f223f795b6247e32d05ad837468584"
+    },
+    {
+      "file": "mistral7b.pdf",
+      "url": "https://raw.githubusercontent.com/mistralai/cookbook/refs/heads/main/mistral/ocr/mistral7b.pdf",
+      "bruno": "bruno/munito/external/ocr/ocr-research-paper.bru",
+      "bytes": 3749788,
+      "sha256": "dfbac4e7035344b305c947481f2e7e8a02f7a24a563917eb6e47f6591d14c5ae"
+    }
+  ],
+  "downloaded": "2026-11-04"
+}

@@ -1,0 +1,14 @@
+[tools]
+node = "24.20.0"
+
+[tasks.setup]
+description = "Install the locked dependencies."
+run = "npm ci"
+
+[tasks.dev]
+description = "Start the local app."
+run = "npm run dev"
+
+[tasks.check]
+description = "Check the format, types, and build."
+run = "npm run check"
