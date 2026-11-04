@@ -1,7 +1,8 @@
 # Sample documents
 
-Four public documents, for the OCR examples beside this folder. `sources.json` records each URL, its Bruno request
-in the monorepo, the source commit, and the SHA-256 checksum of the file.
+Four public documents, for the OCR examples beside this folder. They come from the
+[Mistral cookbook](https://github.com/mistralai/cookbook). `sources.json` records the URL, the size and the
+SHA-256 checksum of each file.
 
 Download them:
 

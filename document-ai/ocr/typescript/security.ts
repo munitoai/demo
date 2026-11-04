@@ -1,4 +1,4 @@
-// Adapted from the monorepo console's csp.ts and public-web.ts.
+// The security headers that the Munito AI console sends, for this example.
 export const permissionsPolicy = "camera=(), microphone=(), geolocation=(), payment=()";
 
 const pagePolicy = [
