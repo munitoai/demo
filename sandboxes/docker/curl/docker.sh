@@ -29,7 +29,7 @@ run() {
 
 echo "== Create a sandbox from the $TEMPLATE template"
 # Images take memory and disk, so use the default size (2 vCPUs, 4 GiB) or a larger one.
-body=$(jq -n --arg template "$TEMPLATE" '{template: $template, size: "default", timeout: 900, metadata: {example: "docker"}}')
+body=$(jq -n --arg template "$TEMPLATE" '{template: $template, size: "default", internet: true, timeout: 900, metadata: {example: "docker"}}')
 sandbox=$(api "$API/sandboxes" -H "Content-Type: application/json" -d "$body") || { echo "$sandbox" >&2; exit 1; }
 SANDBOX=$(jq -r .id <<<"$sandbox")
 trap 'echo "== Delete the sandbox"; api -X DELETE "$API/sandboxes/$SANDBOX" | jq -c "{id, status, end_reason}"' EXIT
