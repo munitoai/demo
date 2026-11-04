@@ -1,0 +1,11 @@
+{
+  "name": "sandboxes-quickstart",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node quickstart.ts"
+  }
+}
