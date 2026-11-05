@@ -34,8 +34,7 @@ a key, a host of Munito's own, or a private address. Each one calls the public A
 export MUNITO_API_KEY="munitoai_..."
 ```
 
-Sandboxes are in preview. To turn them on for your organization,
-[talk to an engineer](https://munito.ai/contact).
+Sandboxes are in public preview. The API, the limits and the prices can change before general availability.
 
 | | Value |
 | --- | --- |
