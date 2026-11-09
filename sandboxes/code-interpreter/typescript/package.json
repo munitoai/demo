@@ -10,10 +10,10 @@
     "check": "tsc --noEmit"
   },
   "dependencies": {
-    "openai": "^7.0.0"
+    "openai": "^7.47.0"
   },
   "devDependencies": {
-    "@types/node": "^26.0.0",
+    "@types/node": "^26.6.6",
     "typescript": "^7.0.0"
   }
 }
