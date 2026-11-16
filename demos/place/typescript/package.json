@@ -11,7 +11,7 @@
     "check": "tsc --noEmit && tsc -p scripts"
   },
   "dependencies": {
-    "terse-sdk": "0.14.9"
+    "terse-sdk": "0.16.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.6",
