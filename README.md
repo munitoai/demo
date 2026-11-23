@@ -55,6 +55,7 @@ A sandbox is a Linux microVM with its own kernel, disk and network. See
 
 | Example | What it does | Run it |
 | --- | --- | --- |
+| [GPU sandboxes/Python](sandboxes/gpu/python) | Run PyTorch on one or two L4 GPUs, render a video, or train a tiny GPT | `uv run hello_gpu.py` |
 | [quickstart/curl](sandboxes/quickstart/curl) | Create a sandbox, run a command, write and read a file, delete it | `./quickstart.sh` |
 | [quickstart/python](sandboxes/quickstart/python) | The same steps, with httpx | `uv run quickstart.py` |
 | [quickstart/typescript](sandboxes/quickstart/typescript) | The same steps, with `fetch` | `node quickstart.ts` |
