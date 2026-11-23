@@ -7,4 +7,4 @@ from munitoai import Munito
 from glass_vi import render_video
 
 with Munito(region="eu") as client:
-    print(render_video(client, gpu="L4", frames=120))
+    print(render_video(client, frames=120))

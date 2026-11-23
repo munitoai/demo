@@ -1,7 +1,15 @@
-"""Render the glass VI with the Munito SDK and encode the downloaded frames locally."""
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["munitoai==0.1.0b1", "imageio-ffmpeg==0.6.0", "numpy", "pillow"]
+# ///
+"""Render a Roman VI on one L4 or benchmark the same scene on the local CPU."""
 
+import argparse
 import json
+import os
+import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from pathlib import Path
@@ -45,53 +53,90 @@ def encode(archive_path, target):
         raise RuntimeError(f"MP4 encoding failed with exit code {encoder.returncode}")
 
 
-def render_video(client: Munito, *, gpu: str = "L4", frames: int = 120) -> Path:
-    """Return the local MP4 path. Save the first frame and timings beside it."""
-    if frames < 1:
-        raise ValueError("frames must be positive")
+def _render_gpu(client, gpu, args, scratch, times):
     start = time.perf_counter()
-    output = Path(tempfile.mkdtemp(prefix="vi-l4-", dir=".")).resolve()
+    box = client.sandboxes.create(gpu=gpu, timeout=900)
+    try:
+        times["create_seconds"] = time.perf_counter() - start
+        while box.status == "pending" and time.time() < box.expires_at:
+            time.sleep(1)
+            box = client.sandboxes.get(box.id)
+        if box.status != "running":
+            raise RuntimeError(f"GPU sandbox {box.id} is {box.status}")
+        for name in FILES:
+            client.sandboxes.write_file(box.id, "/workspace/" + name, (HERE / name).read_bytes())
+        result = client.sandboxes.exec(
+            box.id,
+            ["python3", "/workspace/renderer.py", "--device", "cuda", "--output", "/workspace/result", *args],
+            timeout=780,
+        )
+        if result.exit_code:
+            raise RuntimeError(result.stderr)
+        for name in ("vi.png", "frames.zip"):
+            (scratch / name).write_bytes(client.sandboxes.read_file(box.id, "/workspace/result/" + name))
+        return json.loads(result.stdout)
+    finally:
+        client.sandboxes.delete(box.id)
+
+
+def render_video(client: Munito | None, *, gpu="L4", frames=120, size=960, samples=8) -> Path:
+    """Return the finished MP4 path. Pass a Munito client for a GPU or None for a local CPU benchmark."""
+    if size < 2 or size % 2:
+        raise ValueError("size must be a positive even number for H.264 video")
+    if frames < 1 or samples < 1:
+        raise ValueError("frames and samples must be positive")
+    start = time.perf_counter()
+    mode = "cpu" if client is None else "l4"
+    output = Path(tempfile.mkdtemp(prefix=f"vi-{mode}-", dir=".")).resolve()
+    args = [
+        "--width",
+        str(size),
+        "--height",
+        str(size),
+        "--frames",
+        str(frames),
+        "--samples",
+        str(samples),
+    ]
+    times = {}
+    print(f"Rendering {frames} frames on {mode}. Output: {output}", flush=True)
     with tempfile.TemporaryDirectory() as tmp:
-        archive = Path(tmp, "frames.zip")
-        box = client.sandboxes.create(gpu=gpu, timeout=900)
-        try:
-            create_seconds = time.perf_counter() - start
-            while box.status == "pending" and time.time() < box.expires_at:
-                time.sleep(1)
-                box = client.sandboxes.get(box.id)
-            if box.status != "running":
-                raise RuntimeError(f"GPU sandbox {box.id} is {box.status}")
-            for name in FILES:
-                client.sandboxes.write_file(box.id, f"/workspace/{name}", (HERE / name).read_bytes())
-            result = client.sandboxes.exec(
-                box.id,
-                [
-                    "python3",
-                    "/workspace/renderer.py",
-                    "--device",
-                    "cuda",
-                    "--output",
-                    "/workspace/result",
-                    "--width",
-                    "960",
-                    "--height",
-                    "960",
-                    "--frames",
-                    str(frames),
-                    "--samples",
-                    "8",
-                ],
-                timeout=780,
+        scratch = Path(tmp)
+        if client is None:
+            result = subprocess.run(
+                [sys.executable, str(HERE / "renderer.py"), "--device", "cpu", "--output", tmp, *args],
+                check=True,
+                capture_output=True,
+                text=True,
             )
-            if result.exit_code:
-                raise RuntimeError(result.stderr)
             details = json.loads(result.stdout)
-            (output / "vi.png").write_bytes(client.sandboxes.read_file(box.id, "/workspace/result/vi.png"))
-            archive.write_bytes(client.sandboxes.read_file(box.id, "/workspace/result/frames.zip"))
-        finally:
-            client.sandboxes.delete(box.id)
-        video = output / "vi.mp4"
-        encode(archive, video)
-    details.update(create_seconds=create_seconds, total_seconds=time.perf_counter() - start)
-    (output / "timings.json").write_text(json.dumps(details, indent=2) + "\n")
-    return video
+            times["cpu_threads"] = os.cpu_count()
+        else:
+            details = _render_gpu(client, gpu, args, scratch, times)
+        shutil.copyfile(scratch / "vi.png", output / "vi.png")
+        encode(scratch / "frames.zip", output / "vi.mp4")
+    times["total_seconds"] = time.perf_counter() - start
+    report = {**details, **times}
+    (output / "timings.json").write_text(json.dumps(report, indent=2) + "\n")
+    return output / "vi.mp4"
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--cpu", action="store_true", help="Use the local C++ compiler and all local CPU threads.")
+    parser.add_argument("--size", type=int, default=960)
+    parser.add_argument("--frames", type=int, default=120)
+    parser.add_argument("--samples", type=int, default=8, help="Subpixel samples per pixel.")
+    options = parser.parse_args()
+    kwargs = dict(frames=options.frames, size=options.size, samples=options.samples)
+    if options.cpu:
+        video = render_video(None, **kwargs)
+    else:
+        with Munito(region="eu") as client:
+            video = render_video(client, **kwargs)
+    print((video.parent / "timings.json").read_text().strip())
+    print(video)
+
+
+if __name__ == "__main__":
+    main()

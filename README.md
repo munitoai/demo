@@ -1,10 +1,10 @@
 # Munito AI examples
 
-Runnable examples of the Munito AI APIs: **Sandboxes** (Linux microVMs), **Inference** (open models on an
+Runnable examples of the Munito AI APIs: **Sandboxes** (CPU and GPU execution), **Inference** (open models on an
 OpenAI- and Anthropic-compatible API) and **Document AI** (OCR). Each example is a folder you can copy.
 
 ```
-sandboxes/      a Linux microVM for your code, your agents and your builds
+sandboxes/      CPU and GPU environments for your code, agents and builds
 inference/      open models, through the OpenAI and Anthropic APIs
 document-ai/    PDFs and images into Markdown
 demos/          the large demos, which are not quick starts
@@ -34,7 +34,7 @@ a key, a host of Munito's own, or a private address. Each one calls the public A
 export MUNITO_API_KEY="munitoai_..."
 ```
 
-Sandboxes are in public preview. The API, the limits and the prices can change before general availability.
+A workspace key can run sandbox code on CPUs or GPUs. See the [sandbox plans and limits](https://docs.munito.ai/sandboxes/pricing).
 
 | | Value |
 | --- | --- |
@@ -50,7 +50,7 @@ Run each command inside the folder of the example.
 
 ### Sandboxes
 
-A sandbox is a Linux microVM with its own kernel, disk and network. See
+CPU sandboxes use Linux microVMs. GPU sandboxes run CUDA on whole GPUs. See
 [docs.munito.ai/sandboxes](https://docs.munito.ai/sandboxes).
 
 | Example | What it does | Run it |

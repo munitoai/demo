@@ -1,6 +1,6 @@
 # GPU sandboxes with the Python SDK
 
-Use [uv](https://docs.astral.sh/uv/getting-started/installation/) and set `MUNITO_API_KEY` to a [workspace key](https://console.munito.ai/keys) from an organization with GPU access. Run these commands from this directory. Each script declares its Python version and local dependencies for uv. The EU sandbox image supplies PyTorch and Transformers.
+Use [uv](https://docs.astral.sh/uv/getting-started/installation/) and set `MUNITO_API_KEY` to a [workspace key](https://console.munito.ai/keys) for your organization. Run these commands from this directory. Each script declares its Python version and local dependencies for uv. The EU sandbox image supplies PyTorch and Transformers.
 
 | Script | Run it | Result |
 | --- | --- | --- |
@@ -11,5 +11,7 @@ Use [uv](https://docs.astral.sh/uv/getting-started/installation/) and set `MUNIT
 | [Tiny language model](train_tiny_gpt.py) | `uv run train_tiny_gpt.py` | Prints the first and last next-token training losses for a one-layer GPT. |
 
 The [render helper](glass_vi.py) uses the SDK to upload the [Python renderer](renderer.py) and [native scene](vi.cpp), run the CUDA code, and download the frames. The helper deletes the sandbox and encodes the MP4 locally. The output directory also contains the first frame (`vi.png`) and the run measurements (`timings.json`).
+
+To render the same scene on your own CPU, install a C++17 compiler named `c++` and run `uv run glass_vi.py --cpu`.
 
 See the [GPU sandbox guide](https://docs.munito.ai/sandboxes/gpu) for the video and pricing. The [reference measurements](timings.json) cover two runs per device. The L4 times include sandbox creation, transfer, deletion, and local encoding. The eight-vCPU sandbox was ready when its timer started.
