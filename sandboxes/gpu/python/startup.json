@@ -1,0 +1,37 @@
+{
+  "date_utc": "2026-11-23",
+  "region": "EU",
+  "gpu": "1 NVIDIA L4",
+  "sdk": "munitoai==0.1.0",
+  "wheel_sha256": "0069ee57718b525fd78319cfb9fcc9b48fdd47f69adfe67b89dd183bb5530a2a",
+  "method": "Five new sandboxes, one at a time, on an existing GPU host. Client wall time starts immediately before the SDK create call. Ready is the first observed running status. The first CUDA result includes importing PyTorch, multiplying a tensor on the GPU, copying back the answer, and receiving stdout on the client. Each sandbox is deleted before starting the next.",
+  "median_ready_s": 0.6599247502163053,
+  "median_first_cuda_result_s": 4.402703708037734,
+  "runs": [
+    {
+      "create_s": 1.098854583222419,
+      "ready_s": 1.0988560002297163,
+      "first_cuda_result_s": 4.927704625297338
+    },
+    {
+      "create_s": 0.6449447921477258,
+      "ready_s": 0.6449471670202911,
+      "first_cuda_result_s": 4.376251417212188
+    },
+    {
+      "create_s": 0.679952833801508,
+      "ready_s": 0.6799537087790668,
+      "first_cuda_result_s": 4.413577458821237
+    },
+    {
+      "create_s": 0.6570237502455711,
+      "ready_s": 0.6570254159159958,
+      "first_cuda_result_s": 4.402703708037734
+    },
+    {
+      "create_s": 0.6599237909540534,
+      "ready_s": 0.6599247502163053,
+      "first_cuda_result_s": 4.358364500105381
+    }
+  ]
+}
