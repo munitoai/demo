@@ -1,0 +1,57 @@
+{
+  "scene": "Glass VI",
+  "resolution": [960, 960],
+  "frames": 120,
+  "fps": 24,
+  "samples_per_pixel": 8,
+  "cpu": "EU CPU sandbox, 8 allocated vCPUs and 8 native threads",
+  "gpu": "NVIDIA L4, EU GPU sandbox pool",
+  "scope": "From the start of the runner through local H.264 encoding. The L4 path includes creating and deleting the sandbox, uploading assets, and downloading frames. The GPU host already exists. The CPU sandbox was already running and its dependencies and scene were staged before the CPU timer. Both paths compile the same scene, transfer frames and encode locally. Dependency installation and source download precede timing.",
+  "cpu_runs": [
+    {
+      "device": "cpu",
+      "width": 960,
+      "height": 960,
+      "frames": 120,
+      "samples": 8,
+      "render_seconds": 135.05998318599998,
+      "total_seconds": 146.35600187489763,
+      "cpu_threads": 8,
+      "allocated_vcpus": 8
+    },
+    {
+      "device": "cpu",
+      "width": 960,
+      "height": 960,
+      "frames": 120,
+      "samples": 8,
+      "render_seconds": 132.370580106,
+      "total_seconds": 141.34897483279929,
+      "cpu_threads": 8,
+      "allocated_vcpus": 8
+    }
+  ],
+  "gpu_runs": [
+    {
+      "device": "cuda",
+      "width": 960,
+      "height": 960,
+      "frames": 120,
+      "samples": 8,
+      "render_seconds": 8.576670497999999,
+      "create_seconds": 1.0274631245993078,
+      "total_seconds": 21.373045457992703
+    },
+    {
+      "device": "cuda",
+      "width": 960,
+      "height": 960,
+      "frames": 120,
+      "samples": 8,
+      "render_seconds": 8.744829957,
+      "create_seconds": 1.1012485409155488,
+      "total_seconds": 23.196297083981335
+    }
+  ],
+  "fastest_cpu_over_slowest_gpu": 6.093600815727206
+}
