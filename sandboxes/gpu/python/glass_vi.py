@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12"
-# dependencies = ["munitoai==0.1.0b2", "imageio-ffmpeg==0.6.0", "numpy", "pillow"]
+# dependencies = ["munitoai==0.1.0", "imageio-ffmpeg==0.6.0", "numpy", "pillow"]
 # ///
 """Render a Roman VI on one L4 or benchmark the same scene on the local CPU."""
 

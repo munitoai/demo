@@ -15,3 +15,5 @@ The [render helper](glass_vi.py) uses the SDK to upload the [Python renderer](re
 To render the same scene on your own CPU, install a C++17 compiler named `c++` and run `uv run glass_vi.py --cpu`.
 
 See the [GPU sandbox guide](https://docs.munito.ai/sandboxes/gpu) for the video and pricing. The [reference measurements](timings.json) cover two runs per device. The L4 times include sandbox creation, transfer, deletion, and local encoding. The eight-vCPU sandbox was ready when its timer started.
+
+We timed five new sandboxes on existing L4 capacity. Median time from create to ready was 0.66 seconds. The first PyTorch CUDA result reached the client in 4.40 seconds at the median. [Startup measurements](startup.json)
