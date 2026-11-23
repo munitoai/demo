@@ -1,6 +1,6 @@
 # /// script
 # requires-python = ">=3.12"
-# dependencies = ["munitoai==0.1.0b1"]
+# dependencies = ["munitoai==0.1.0b2"]
 # ///
 from munitoai import App
 
